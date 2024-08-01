@@ -1,4 +1,4 @@
-## City Information App
+# City Information App
 
 I have created a simple app that, when ran, asks for user input (city name) from the command line.
 That input is then ran through simple validation and error checking. If the input is correct, for example the user
@@ -13,23 +13,6 @@ pretty straightforward to run.
 Please create an .env file and use your own OPENWEATHER_API_KEY that you can get after you register
 at https://openweathermap.org/api .
 
-
-# Project layout:
-
-api_task/
-│
-├── city_information/
-│ ├── **init**.py
-│ ├── city_information.py
-│ ├── utils.py
-├── tests/
-│ ├── **init**.py
-│ ├── test_city_information.py
-│ ├── test_main.py
-├── .env
-├── main.py
-├── README.md
-├── requirements.txt
 
 ## Setup
 
