@@ -92,3 +92,82 @@ def test_get_city_temperature_with_spaces(city_information):
     assert temperature is not None
     assert isinstance(temperature, float)
     assert error is None
+
+
+def test_api_key_expiry(city_information, monkeypatch):
+    """
+    Test case for an expired API key.
+    """
+    def mock_get_city_summary(city_name):
+        return None, "API key expired."
+
+    monkeypatch.setattr(city_information, "get_city_summary", mock_get_city_summary)
+    summary, error = city_information.get_city_summary("London")
+
+    assert summary is None
+    assert error == "API key expired."
+    def mock_get_city_temperature(city_name):
+        return None, "API key expired."
+
+    monkeypatch.setattr(
+        city_information, "get_city_temperature", mock_get_city_temperature
+    )
+
+    temperature, error = city_information.get_city_temperature("London")
+    assert temperature is None
+    assert error == "API key expired."
+
+
+def test_invalid_api_endpoint(city_information, monkeypatch):
+    """
+    Test case for handling an invalid API endpoint.
+    """
+    def mock_get_city_summary(city_name):
+        return None, "Invalid API endpoint."
+
+    monkeypatch.setattr(city_information, "get_city_summary", mock_get_city_summary)
+    summary, error = city_information.get_city_summary("London")
+
+    assert summary is None
+    assert error == "Invalid API endpoint."
+
+    def mock_get_city_temperature(city_name):
+        return None, "Invalid API endpoint."
+
+    monkeypatch.setattr(
+        city_information, "get_city_temperature", mock_get_city_temperature
+    )
+    temperature, error = city_information.get_city_temperature("London")
+
+    assert temperature is None
+    assert error == "Invalid API endpoint."
+
+
+def test_get_city_summary_network_failure(city_information, monkeypatch):
+    """
+    Test case for network failure during city summary retrieval.
+    """
+    def mock_get_city_summary(city_name):
+        return None, "Network error. Please check your connection and try again."
+
+    monkeypatch.setattr(city_information, "get_city_summary", mock_get_city_summary)
+    summary, error = city_information.get_city_summary("London")
+
+    assert summary is None
+    assert error == "Network error. Please check your connection and try again."
+
+
+def test_get_city_temperature_network_failure(city_information, monkeypatch):
+    """
+    Test case for network failure during temperature retrieval.
+    """
+    def mock_get_city_temperature(city_name):
+        return None, "Network error. Please check your connection and try again."
+
+    monkeypatch.setattr(
+        city_information, "get_city_temperature", mock_get_city_temperature
+    )
+    temperature, error = city_information.get_city_temperature("London")
+
+    assert temperature is None
+    assert error == "Network error. Please check your connection and try again."
