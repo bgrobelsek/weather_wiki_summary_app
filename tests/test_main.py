@@ -173,3 +173,54 @@ def test_get_city_temperature_valid_city(mock_get, city_information):
 
     assert temperature == 26.5
     assert error is None
+
+
+@patch("requests.get")
+def test_get_city_summary_invalid_api_key(mock_get, city_information):
+    city_name = "TestCity22"
+
+    mock_response = requests.Response()
+    mock_response.status_code == 401
+    mock_response._content = b'{"detail": "Invalid API Key"}'
+    mock_get.return_value = mock_response
+
+    summary, error = city_information.get_city_summary(city_name)
+
+    assert summary is None
+    assert error == 'Unexpected error: Invalid API Key'
+
+
+@patch("requests.get")
+def test_get_city_summary_rate_limit(mock_get, city_information):
+    """
+    Test handling of rate limiting by the API.
+    """
+    city_name = "RateLimitedCity"
+
+    mock_response = requests.Response()
+    mock_response.status_code = 429  # Too Many Requests
+    mock_response._content = b'{"detail": "Rate limit exceeded"}'
+    mock_get.return_value = mock_response
+
+    summary, error = city_information.get_city_summary(city_name)
+
+    assert summary is None
+    assert error == "Unexpected error: Rate limit exceeded"
+
+
+@patch("requests.get")
+def test_get_city_summary_no_data(mock_get, city_information):
+    """
+    Test handling of a valid JSON response with missing expected data.
+    """
+    city_name = "NoDataCity"
+
+    mock_response = requests.Response()
+    mock_response.status_code = 200
+    mock_response._content = b'{}'  # Empty JSON object
+    mock_get.return_value = mock_response
+
+    summary, error = city_information.get_city_summary(city_name)
+
+    assert summary is None
+    assert error == "Unexpected error: Unknown error"
